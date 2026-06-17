@@ -157,3 +157,4 @@
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net10.0/SmartWarehouse.Api.genruntimeconfig.cache
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net10.0/ref/SmartWarehouse.Api.dll
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net10.0/Scalar.AspNetCore.dll
+/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net10.0/SmartWarehouse.Api.sourcelink.json

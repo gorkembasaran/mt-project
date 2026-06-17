@@ -1,12 +1,23 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using SmartWarehouse.Api.Data;
-using SmartWarehouse.Api.Managers;
-using SmartWarehouse.Api.Repositories;
+using SmartWarehouse.Api.Managers.Products;
+using SmartWarehouse.Api.Managers.StockMovements;
+using SmartWarehouse.Api.Managers.WarehouseLocations;
+using SmartWarehouse.Api.Repositories.Products;
+using SmartWarehouse.Api.Repositories.StockMovements;
+using SmartWarehouse.Api.Repositories.WarehouseLocations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.DictionaryKeyPolicy = null;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(

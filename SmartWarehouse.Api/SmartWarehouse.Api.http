@@ -1,6 +1,102 @@
-@SmartWarehouse.Api_HostAddress = http://localhost:5057
+@SmartWarehouseApiHostAddress = http://localhost:5057
+@CompanyId = COMPANY-001
+@WarehouseLocationId = 1
+@ProductId = 1
 
-GET {{SmartWarehouse.Api_HostAddress}}/weatherforecast/
+###
+POST {{SmartWarehouseApiHostAddress}}/api/warehouse-locations/create
+Content-Type: application/json
+
+{
+  "CompanyId": "{{CompanyId}}",
+  "LocationCode": "A-01",
+  "ZoneName": "Cold Storage",
+  "Description": "Primary inbound shelf"
+}
+
+###
+GET {{SmartWarehouseApiHostAddress}}/api/warehouse-locations/by-company/{{CompanyId}}
 Accept: application/json
 
 ###
+GET {{SmartWarehouseApiHostAddress}}/api/warehouse-locations/{{WarehouseLocationId}}?companyId={{CompanyId}}
+Accept: application/json
+
+###
+POST {{SmartWarehouseApiHostAddress}}/api/products/create
+Content-Type: application/json
+
+{
+  "CompanyId": "{{CompanyId}}",
+  "ProductName": "Industrial Sensor",
+  "Sku": "SEN-1001",
+  "Category": "Electronics",
+  "MinimumStock": 3,
+  "WarehouseLocationId": {{WarehouseLocationId}}
+}
+
+###
+GET {{SmartWarehouseApiHostAddress}}/api/products/paged?companyId={{CompanyId}}&page=1&pageSize=25&search=sensor&category=electronics
+Accept: application/json
+
+###
+GET {{SmartWarehouseApiHostAddress}}/api/products/{{ProductId}}?companyId={{CompanyId}}
+Accept: application/json
+
+###
+POST {{SmartWarehouseApiHostAddress}}/api/products/update
+Content-Type: application/json
+
+{
+  "Id": {{ProductId}},
+  "CompanyId": "{{CompanyId}}",
+  "ProductName": "Industrial Sensor V2",
+  "Sku": "SEN-1001",
+  "Category": "Electronics",
+  "MinimumStock": 5,
+  "WarehouseLocationId": {{WarehouseLocationId}}
+}
+
+###
+POST {{SmartWarehouseApiHostAddress}}/api/stock-movements/inbound
+Content-Type: application/json
+
+{
+  "CompanyId": "{{CompanyId}}",
+  "ProductId": {{ProductId}},
+  "Quantity": 15,
+  "Note": "Supplier delivery"
+}
+
+###
+POST {{SmartWarehouseApiHostAddress}}/api/stock-movements/outbound
+Content-Type: application/json
+
+{
+  "CompanyId": "{{CompanyId}}",
+  "ProductId": {{ProductId}},
+  "Quantity": 4,
+  "Note": "Customer shipment"
+}
+
+###
+GET {{SmartWarehouseApiHostAddress}}/api/stock-movements/by-company/{{CompanyId}}
+Accept: application/json
+
+###
+POST {{SmartWarehouseApiHostAddress}}/api/products/delete
+Content-Type: application/json
+
+{
+  "Id": {{ProductId}},
+  "CompanyId": "{{CompanyId}}"
+}
+
+###
+POST {{SmartWarehouseApiHostAddress}}/api/warehouse-locations/delete
+Content-Type: application/json
+
+{
+  "Id": {{WarehouseLocationId}},
+  "CompanyId": "{{CompanyId}}"
+}
