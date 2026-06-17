@@ -21,7 +21,10 @@ public class ProductManager : IProductManager
 
     public async Task<Product> CreateAsync(CreateProductDto dto)
     {
-        Validate(dto.CompanyId, dto.ProductName, dto.Sku, dto.WarehouseLocationId, dto.MinimumStock);
+        Validate(dto.CompanyId, dto.ProductName, dto.Sku, dto.Unit, dto.UnitPrice, dto.WarehouseLocationId, dto.MinimumStock);
+
+        if (await _productRepository.SkuExistsAsync(dto.CompanyId, dto.Sku))
+            throw new InvalidOperationException("ProductCode already exists");
 
         var warehouseLocation = await GetValidatedWarehouseLocationAsync(dto.WarehouseLocationId, dto.CompanyId);
 
@@ -31,6 +34,8 @@ public class ProductManager : IProductManager
             ProductName = dto.ProductName,
             Sku = dto.Sku,
             Category = dto.Category,
+            Unit = dto.Unit,
+            UnitPrice = dto.UnitPrice,
             CurrentStock = 0,
             MinimumStock = dto.MinimumStock,
             WarehouseLocationId = dto.WarehouseLocationId
@@ -44,7 +49,7 @@ public class ProductManager : IProductManager
 
     public async Task UpdateAsync(UpdateProductDto dto)
     {
-        Validate(dto.CompanyId, dto.ProductName, dto.Sku, dto.WarehouseLocationId, dto.MinimumStock);
+        Validate(dto.CompanyId, dto.ProductName, dto.Sku, dto.Unit, dto.UnitPrice, dto.WarehouseLocationId, dto.MinimumStock);
 
         var existing = await _productRepository.GetByIdAsync(dto.Id);
 
@@ -54,11 +59,16 @@ public class ProductManager : IProductManager
         if (existing.CompanyId != dto.CompanyId)
             throw new UnauthorizedAccessException("CompanyId mismatch");
 
+        if (await _productRepository.SkuExistsAsync(dto.CompanyId, dto.Sku, dto.Id))
+            throw new InvalidOperationException("ProductCode already exists");
+
         await GetValidatedWarehouseLocationAsync(dto.WarehouseLocationId, dto.CompanyId);
 
         existing.ProductName = dto.ProductName;
         existing.Sku = dto.Sku;
         existing.Category = dto.Category;
+        existing.Unit = dto.Unit;
+        existing.UnitPrice = dto.UnitPrice;
         existing.MinimumStock = dto.MinimumStock;
         existing.WarehouseLocationId = dto.WarehouseLocationId;
         existing.UpdatedAt = DateTime.UtcNow;
@@ -110,6 +120,8 @@ public class ProductManager : IProductManager
         string companyId,
         string productName,
         string sku,
+        string unit,
+        decimal unitPrice,
         int warehouseLocationId,
         int minimumStock)
     {
@@ -121,6 +133,12 @@ public class ProductManager : IProductManager
 
         if (string.IsNullOrWhiteSpace(sku))
             throw new ArgumentException("Sku is required");
+
+        if (string.IsNullOrWhiteSpace(unit))
+            throw new ArgumentException("Unit is required");
+
+        if (unitPrice <= 0)
+            throw new ArgumentException("UnitPrice must be greater than zero");
 
         if (warehouseLocationId <= 0)
             throw new ArgumentException("WarehouseLocationId is required");

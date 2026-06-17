@@ -16,6 +16,8 @@ public static class ResponseMapper
             ProductName = product.ProductName,
             Sku = product.Sku,
             Category = product.Category,
+            Unit = product.Unit,
+            UnitPrice = product.UnitPrice,
             CurrentStock = product.CurrentStock,
             MinimumStock = product.MinimumStock,
             WarehouseLocationId = product.WarehouseLocationId,
@@ -51,6 +53,7 @@ public static class ResponseMapper
             Quantity = movement.Quantity,
             MovementType = movement.MovementType,
             Note = movement.Note,
+            Description = movement.Note,
             CreatedAt = movement.CreatedAt
         };
     }

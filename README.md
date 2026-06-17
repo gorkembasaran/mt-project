@@ -1,73 +1,205 @@
-# Smart Warehouse Backend
+# SmartWare
 
-Akıllı Depo Yönetimi backend API projesi.
+Akıllı Depo Yönetimi modülü için geliştirilen tam yığın proje.
 
-## Teknoloji
-- .NET 9
-- ASP.NET Core Web API
-- Entity Framework Core
-- SQL Server
+Bu repo iki ana parçadan oluşur:
 
-## Mimari
-- `Controller -> Manager -> Repository -> Entity (DbContext)`
-- Multi-tenant yapı için tüm entity'lerde `CompanyId`
-- Soft delete için tüm entity'lerde `IsDeleted`
+- `SmartWarehouse.Api` : .NET 9 + ASP.NET Core Web API backend
+- `smartwarehouse-ui` : React 18 + TypeScript + MUI v7 frontend
 
-## Klasör Yapısı
-- `SmartWarehouse.Api/Controllers`
-  Feature bazlı controller klasörleri ve ortak `ApiControllerBase`
-- `SmartWarehouse.Api/Managers`
-  İş kuralları ve validasyonlar
-- `SmartWarehouse.Api/Repositories`
-  Sadece EF Core veri erişimi
-- `SmartWarehouse.Api/Dtos`
-  Feature bazlı request/response DTO'ları
-- `SmartWarehouse.Api/Data`
-  `AppDbContext` ve EF model konfigürasyonu
-- `SmartWarehouse.Api/Entities`
-  Veritabanı entity'leri
-- `SmartWarehouse.Api/Migrations`
-  EF Core migration dosyaları
+Proje, PDF gereksinimindeki katmanlı mimariye ve kurallara göre hazırlanmıştır:
 
-## İş Kuralları
-- `PUT` ve `DELETE` kullanılmaz, update/delete işlemleri `POST` endpointleriyle yapılır.
-- `CompanyId` eksikse `400 BadRequest` döner.
-- Veri başka şirkete aitse `403 Forbidden` döner.
-- `Product.CurrentStock` yalnızca inbound/outbound stock movement ile değişir.
-- `WarehouseLocation` aktif ürün içeriyorsa soft delete engellenir.
+- Backend mimarisi: `Controller -> Manager -> Repository -> Entity (DbContext)`
+- Veritabanı: MS SQL Server
+- ORM: Entity Framework Core
+- Frontend: Single Page Application
+- Multi-tenant güvenlik: `CompanyId`
+- Soft delete: `IsDeleted`
 
-## Önemli Endpointler
-- `GET /api/products/paged`
-- `GET /api/products/{id}?companyId=...`
-- `POST /api/products/create`
-- `POST /api/products/update`
-- `POST /api/products/delete`
-- `GET /api/warehouse-locations/by-company/{companyId}`
-- `POST /api/warehouse-locations/create`
-- `POST /api/warehouse-locations/update`
-- `POST /api/warehouse-locations/delete`
-- `GET /api/stock-movements/by-company/{companyId}`
-- `POST /api/stock-movements/inbound`
-- `POST /api/stock-movements/outbound`
+## Repo Yapısı
 
-## Geliştirme Notları
-- Örnek istekler için `SmartWarehouse.Api/SmartWarehouse.Api.http` kullanılabilir.
-- Çalışma raporu için `CALISMA_RAPORU.md` dosyasına bakılabilir.
-
-## Build
-```bash
-dotnet build SmartWarehouse.Api/SmartWarehouse.Api.csproj
+```text
+mt-project
+├── SmartWarehouse.Api
+├── smartwarehouse-ui
+├── CALISMA_RAPORU.md
+└── README.md
 ```
 
-## Run
-Makinede .NET 9 runtime kuruluysa:
+## Gereksinimler
+
+- .NET 9 SDK
+- Node.js 20+
+- npm
+- Docker Desktop
+
+## Hızlı Başlangıç
+
+### 1. .NET 9 Kur
+
+Makinede `dotnet --version` çıktısı `9.x` değilse iki seçenek var.
+
+Homebrew ile:
 
 ```bash
-dotnet run --project SmartWarehouse.Api/SmartWarehouse.Api.csproj
+brew install --cask dotnet-sdk@9
 ```
 
-Eğer yalnızca .NET 10 runtime varsa:
+Yetki istemeyen kullanıcı-dizini kurulumu:
 
 ```bash
-DOTNET_ROLL_FORWARD=Major dotnet run --project SmartWarehouse.Api/SmartWarehouse.Api.csproj
+curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+chmod +x /tmp/dotnet-install.sh
+/tmp/dotnet-install.sh --channel 9.0 --install-dir "$HOME/.dotnet"
 ```
+
+Kalıcı PATH ayarı:
+
+```bash
+echo 'export DOTNET_ROOT="$HOME/.dotnet"' >> ~/.zshrc
+echo 'export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"' >> ~/.zshrc
+echo 'export DOTNET_ROOT="$HOME/.dotnet"' >> ~/.zprofile
+echo 'export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"' >> ~/.zprofile
+source ~/.zshrc
+```
+
+Kontrol:
+
+```bash
+which dotnet
+dotnet --version
+dotnet --list-runtimes
+```
+
+Beklenen örnek:
+
+- `which dotnet` -> `/Users/<kullanici>/.dotnet/dotnet`
+- `dotnet --version` -> `9.0.x`
+
+### 2. SQL Server Container'ını Başlat
+
+Docker Desktop açık olmalı.
+
+```bash
+docker run --name smartwarehouse-sql \
+  --platform linux/amd64 \
+  -e ACCEPT_EULA=Y \
+  -e MSSQL_SA_PASSWORD='StrongPass123!' \
+  -p 1433:1433 \
+  -d mcr.microsoft.com/mssql/server:2022-latest
+```
+
+Port kontrolü:
+
+```bash
+nc -zv localhost 1433
+```
+
+Konteyneri durdur / başlat:
+
+```bash
+docker stop smartwarehouse-sql
+docker start smartwarehouse-sql
+```
+
+Tam temiz reset:
+
+```bash
+docker rm -f smartwarehouse-sql
+```
+
+### 3. Backend'i Çalıştır
+
+```bash
+cd /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api
+dotnet ef database update
+dotnet run
+```
+
+Eğer shell hâlâ eski `dotnet` binary'sini kullanıyorsa:
+
+```bash
+$HOME/.dotnet/dotnet ef database update
+$HOME/.dotnet/dotnet run
+```
+
+Backend varsayılan adresi:
+
+- `http://localhost:5057`
+
+### 4. Frontend'i Çalıştır
+
+Yeni terminalde:
+
+```bash
+cd /Users/gorkembasaran/Documents/GitHub/mt-project/smartwarehouse-ui
+npm install
+npm run dev
+```
+
+Frontend varsayılan adresi:
+
+- `http://localhost:5173`
+
+Vite proxy varsayılan olarak `/api` çağrılarını `http://localhost:5057` adresine yönlendirir.
+
+## İlk Açılışta Beklenen Durum
+
+- Temiz veritabanında ürün, lokasyon ve stok hareketi listeleri boş gelir
+- Frontend boş state gösterir
+- İlk ürün oluşturulana kadar dashboard kartları `0` değerleriyle açılır
+
+## Detay Dokümanlar
+
+- Backend kurulumu ve endpoint detayları: [SmartWarehouse.Api/README.md](/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/README.md)
+- Frontend kurulumu ve ekran yapısı: [smartwarehouse-ui/README.md](/Users/gorkembasaran/Documents/GitHub/mt-project/smartwarehouse-ui/README.md)
+- Çalışma raporu: [CALISMA_RAPORU.md](/Users/gorkembasaran/Documents/GitHub/mt-project/CALISMA_RAPORU.md)
+
+## Sık Karşılaşılan Sorunlar
+
+### `You must install or update .NET`
+
+Sebep:
+
+- Proje `net9.0`
+- Makinede sadece `.NET 10` runtime olabilir
+
+Çözüm:
+
+- `.NET 9 SDK` kur
+- Gerekirse `dotnet` yerine `$HOME/.dotnet/dotnet` kullan
+
+### Frontend'de `/api/... 500 Internal Server Error`
+
+Genellikle şu sebeplerden biri olur:
+
+- SQL Server container kapalıdır
+- Migration uygulanmamıştır
+- Backend ayağa kalkmamıştır
+
+Kontrol:
+
+```bash
+docker ps
+nc -zv localhost 1433
+curl -i http://localhost:5057/api/warehouse-locations/by-company/COMP-001
+```
+
+### Frontend'de `http proxy error` veya `ECONNREFUSED`
+
+Sebep:
+
+- Backend `5057` portunda çalışmıyordur
+
+Kontrol:
+
+```bash
+lsof -iTCP:5057 -sTCP:LISTEN -n -P
+```
+
+## Notlar
+
+- Varsayılan test şirketi `COMP-001`
+- Frontend backend'e PascalCase request body gönderir
+- Backend response'ları PascalCase döner
+- `PUT` ve `DELETE` bilinçli olarak kullanılmaz; update/delete işlemleri `POST` ile yapılır

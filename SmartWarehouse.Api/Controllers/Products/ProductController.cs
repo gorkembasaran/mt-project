@@ -8,6 +8,7 @@ namespace SmartWarehouse.Api.Controllers.Products;
 
 [ApiController]
 [Route("api/products")]
+[Route("api/product")]
 public class ProductController : ApiControllerBase
 {
     private readonly IProductManager _productManager;

@@ -1,11 +1,6 @@
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/appsettings.Development.json
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/appsettings.json
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.staticwebassets.endpoints.json
-/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api
-/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.deps.json
-/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.runtimeconfig.json
-/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.dll
-/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.pdb
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/Azure.Core.dll
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/Azure.Identity.dll
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/Humanizer.dll
@@ -147,10 +142,13 @@
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/staticwebassets.build.json.cache
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/staticwebassets.development.json
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/staticwebassets.build.endpoints.json
-/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/swae.build.ex.cache
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/SmartWar.49A98FB9.Up2Date
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/SmartWarehouse.Api.dll
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/refint/SmartWarehouse.Api.dll
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/SmartWarehouse.Api.pdb
+/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.deps.json
+/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.runtimeconfig.json
+/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.dll
+/Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/bin/Debug/net9.0/SmartWarehouse.Api.pdb
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/SmartWarehouse.Api.genruntimeconfig.cache
 /Users/gorkembasaran/Documents/GitHub/mt-project/SmartWarehouse.Api/obj/Debug/net9.0/ref/SmartWarehouse.Api.dll

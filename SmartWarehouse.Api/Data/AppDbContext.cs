@@ -26,10 +26,15 @@ public class AppDbContext : DbContext
             entity.Property(p => p.ProductName).HasMaxLength(200);
             entity.Property(p => p.Sku).HasMaxLength(100);
             entity.Property(p => p.Category).HasMaxLength(100);
+            entity.Property(p => p.Unit).HasMaxLength(50);
+            entity.Property(p => p.UnitPrice).HasPrecision(18, 2);
 
             entity.HasIndex(p => new { p.CompanyId, p.IsDeleted, p.CreatedAt });
             entity.HasIndex(p => new { p.CompanyId, p.IsDeleted, p.Category });
             entity.HasIndex(p => new { p.CompanyId, p.WarehouseLocationId, p.IsDeleted });
+            entity.HasIndex(p => new { p.CompanyId, p.Sku })
+                .IsUnique()
+                .HasFilter("[IsDeleted] = 0");
         });
 
         modelBuilder.Entity<WarehouseLocation>(entity =>

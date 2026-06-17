@@ -31,6 +31,7 @@ public class ProductRepository : IProductRepository
 
         var query = _context.Products
             .AsNoTracking()
+            .Include(x => x.WarehouseLocation)
             .Where(x => x.CompanyId == request.CompanyId && !x.IsDeleted);
 
         if (!string.IsNullOrWhiteSpace(request.Search))
@@ -49,6 +50,27 @@ public class ProductRepository : IProductRepository
             query = query.Where(x => x.Category.ToLower() == category);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Zone))
+        {
+            var zone = request.Zone.Trim().ToLower();
+            query = query.Where(x =>
+                x.WarehouseLocation != null &&
+                x.WarehouseLocation.ZoneName.ToLower() == zone);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Status))
+        {
+            var status = request.Status.Trim().ToLower();
+
+            query = status switch
+            {
+                "tukendi" or "tükendi" => query.Where(x => x.CurrentStock == 0),
+                "kritik" => query.Where(x => x.CurrentStock > 0 && x.CurrentStock <= x.MinimumStock),
+                "yeterli" => query.Where(x => x.CurrentStock > x.MinimumStock),
+                _ => query
+            };
+        }
+
         var totalCount = await query.CountAsync();
 
         var data = await query
@@ -62,10 +84,13 @@ public class ProductRepository : IProductRepository
                 ProductName = x.ProductName,
                 Sku = x.Sku,
                 Category = x.Category,
+                Unit = x.Unit,
+                UnitPrice = x.UnitPrice,
                 CurrentStock = x.CurrentStock,
                 MinimumStock = x.MinimumStock,
                 WarehouseLocationId = x.WarehouseLocationId,
-                LocationCode = x.WarehouseLocation != null ? x.WarehouseLocation.LocationCode : ""
+                LocationCode = x.WarehouseLocation != null ? x.WarehouseLocation.LocationCode : "",
+                WarehouseZoneName = x.WarehouseLocation != null ? x.WarehouseLocation.ZoneName : ""
             })
             .ToListAsync();
 
@@ -93,6 +118,17 @@ public class ProductRepository : IProductRepository
             x.WarehouseLocationId == warehouseLocationId &&
             x.CompanyId == companyId &&
             !x.IsDeleted);
+    }
+
+    public async Task<bool> SkuExistsAsync(string companyId, string sku, int? excludedProductId = null)
+    {
+        var normalizedSku = sku.Trim().ToLower();
+
+        return await _context.Products.AnyAsync(x =>
+            x.CompanyId == companyId &&
+            !x.IsDeleted &&
+            x.Sku.ToLower() == normalizedSku &&
+            (!excludedProductId.HasValue || x.Id != excludedProductId.Value));
     }
 
     public async Task UpdateAsync(Product product)

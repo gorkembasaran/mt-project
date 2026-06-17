@@ -12,6 +12,10 @@ public class ProductDetailDto
 
     public string Category { get; set; } = string.Empty;
 
+    public string Unit { get; set; } = string.Empty;
+
+    public decimal UnitPrice { get; set; }
+
     public int CurrentStock { get; set; }
 
     public int MinimumStock { get; set; }

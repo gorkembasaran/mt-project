@@ -62,6 +62,15 @@ namespace SmartWarehouse.Api.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -70,13 +79,17 @@ namespace SmartWarehouse.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("WarehouseLocationId");
+
+                    b.HasIndex("CompanyId", "Sku")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
                     b.HasIndex("CompanyId", "IsDeleted", "Category");
 
                     b.HasIndex("CompanyId", "IsDeleted", "CreatedAt");
 
                     b.HasIndex("CompanyId", "WarehouseLocationId", "IsDeleted");
-
-                    b.HasIndex("WarehouseLocationId");
 
                     b.ToTable("Products");
                 });
@@ -122,8 +135,6 @@ namespace SmartWarehouse.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId", "IsDeleted", "CreatedAt");
-
-                    b.HasIndex("ProductId");
 
                     b.HasIndex("ProductId", "CreatedAt");
 

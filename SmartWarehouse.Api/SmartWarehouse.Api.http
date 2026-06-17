@@ -1,5 +1,5 @@
 @SmartWarehouseApiHostAddress = http://localhost:5057
-@CompanyId = COMPANY-001
+@CompanyId = COMP-001
 @WarehouseLocationId = 1
 @ProductId = 1
 
@@ -9,9 +9,9 @@ Content-Type: application/json
 
 {
   "CompanyId": "{{CompanyId}}",
-  "LocationCode": "A-01",
-  "ZoneName": "Cold Storage",
-  "Description": "Primary inbound shelf"
+  "LocationCode": "A5-2",
+  "ZoneName": "A",
+  "Description": "A bölgesi / A5-2 rafı"
 }
 
 ###
@@ -28,15 +28,17 @@ Content-Type: application/json
 
 {
   "CompanyId": "{{CompanyId}}",
-  "ProductName": "Industrial Sensor",
-  "Sku": "SEN-1001",
-  "Category": "Electronics",
+  "ProductName": "Laptop Bilgisayar",
+  "Sku": "PRD-0001",
+  "Category": "Elektronik",
+  "Unit": "Adet",
+  "UnitPrice": 3764.42,
   "MinimumStock": 3,
   "WarehouseLocationId": {{WarehouseLocationId}}
 }
 
 ###
-GET {{SmartWarehouseApiHostAddress}}/api/products/paged?companyId={{CompanyId}}&page=1&pageSize=25&search=sensor&category=electronics
+GET {{SmartWarehouseApiHostAddress}}/api/products/paged?companyId={{CompanyId}}&page=1&pageSize=25&search=laptop&category=Elektronik&zone=A&status=Yeterli
 Accept: application/json
 
 ###
@@ -50,33 +52,35 @@ Content-Type: application/json
 {
   "Id": {{ProductId}},
   "CompanyId": "{{CompanyId}}",
-  "ProductName": "Industrial Sensor V2",
-  "Sku": "SEN-1001",
-  "Category": "Electronics",
+  "ProductName": "Laptop Bilgisayar Pro",
+  "Sku": "PRD-0001",
+  "Category": "Elektronik",
+  "Unit": "Adet",
+  "UnitPrice": 4120.00,
   "MinimumStock": 5,
   "WarehouseLocationId": {{WarehouseLocationId}}
 }
 
 ###
-POST {{SmartWarehouseApiHostAddress}}/api/stock-movements/inbound
+POST {{SmartWarehouseApiHostAddress}}/api/stock-movements/entry
 Content-Type: application/json
 
 {
   "CompanyId": "{{CompanyId}}",
   "ProductId": {{ProductId}},
   "Quantity": 15,
-  "Note": "Supplier delivery"
+  "Description": "Tedarikçi teslimatı"
 }
 
 ###
-POST {{SmartWarehouseApiHostAddress}}/api/stock-movements/outbound
+POST {{SmartWarehouseApiHostAddress}}/api/stock-movements/exit
 Content-Type: application/json
 
 {
   "CompanyId": "{{CompanyId}}",
   "ProductId": {{ProductId}},
   "Quantity": 4,
-  "Note": "Customer shipment"
+  "Description": "Müşteri sevki"
 }
 
 ###

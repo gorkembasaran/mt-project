@@ -7,4 +7,6 @@ public class PagedRequestDto
     public int PageSize { get; set; } = 25;
     public string? Search { get; set; }
     public string? Category { get; set; }
+    public string? Zone { get; set; }
+    public string? Status { get; set; }
 }

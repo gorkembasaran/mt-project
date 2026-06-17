@@ -6,4 +6,5 @@ public class CreateStockMovementDto
     public int ProductId { get; set; }
     public int Quantity { get; set; }
     public string Note { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 }

@@ -8,6 +8,7 @@ namespace SmartWarehouse.Api.Controllers.StockMovements;
 
 [ApiController]
 [Route("api/stock-movements")]
+[Route("api/stock-movement")]
 public class StockMovementController : ApiControllerBase
 {
     private readonly IStockMovementManager _manager;
@@ -49,6 +50,12 @@ public class StockMovementController : ApiControllerBase
         });
     }
 
+    [HttpPost("entry")]
+    public Task<IActionResult> Entry([FromBody] CreateStockMovementDto dto)
+    {
+        return Inbound(dto);
+    }
+
     [HttpPost("outbound")]
     public async Task<IActionResult> Outbound([FromBody] CreateStockMovementDto dto)
     {
@@ -61,5 +68,11 @@ public class StockMovementController : ApiControllerBase
             var movement = await _manager.OutboundAsync(dto);
             return OkResponse(ResponseMapper.ToStockMovementDto(movement), "Stock outbound completed successfully");
         });
+    }
+
+    [HttpPost("exit")]
+    public Task<IActionResult> Exit([FromBody] CreateStockMovementDto dto)
+    {
+        return Outbound(dto);
     }
 }

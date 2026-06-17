@@ -21,6 +21,7 @@ public class StockMovementManager : IStockMovementManager
     public async Task<StockMovement> InboundAsync(CreateStockMovementDto dto)
     {
         Validate(dto);
+        var movementNote = ResolveDescription(dto);
 
         var product = await _productRepository.GetByIdAsync(dto.ProductId);
 
@@ -39,7 +40,7 @@ public class StockMovementManager : IStockMovementManager
             ProductId = dto.ProductId,
             Quantity = dto.Quantity,
             MovementType = "IN",
-            Note = dto.Note
+            Note = movementNote
         };
 
         var createdMovement = await _movementRepository.CreateWithProductUpdateAsync(product, movement);
@@ -51,6 +52,7 @@ public class StockMovementManager : IStockMovementManager
     public async Task<StockMovement> OutboundAsync(CreateStockMovementDto dto)
     {
         Validate(dto);
+        var movementNote = ResolveDescription(dto);
 
         var product = await _productRepository.GetByIdAsync(dto.ProductId);
 
@@ -72,7 +74,7 @@ public class StockMovementManager : IStockMovementManager
             ProductId = dto.ProductId,
             Quantity = dto.Quantity,
             MovementType = "OUT",
-            Note = dto.Note
+            Note = movementNote
         };
 
         var createdMovement = await _movementRepository.CreateWithProductUpdateAsync(product, movement);
@@ -99,5 +101,15 @@ public class StockMovementManager : IStockMovementManager
 
         if (dto.Quantity <= 0)
             throw new ArgumentException("Quantity must be greater than zero");
+
+        if (string.IsNullOrWhiteSpace(dto.Description) && string.IsNullOrWhiteSpace(dto.Note))
+            throw new ArgumentException("Description is required");
+    }
+
+    private static string ResolveDescription(CreateStockMovementDto dto)
+    {
+        return string.IsNullOrWhiteSpace(dto.Description)
+            ? dto.Note.Trim()
+            : dto.Description.Trim();
     }
 }
